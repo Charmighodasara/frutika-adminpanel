@@ -65,12 +65,12 @@ function Product(props) {
 
     const { handleSubmit, handleBlur, handleChange, errors, touched } = formik
 
-    const handleDelete =(params ) => {
+    const handleDelete = (params) => {
         console.log(params.id);
 
-        let localData =JSON.parse (localStorage.getItem("product"))
-        let fData = localData.filter((p)=> p.id !== params.id)
-        localStorage.setItem("product" , JSON.stringify(fData));
+        let localData = JSON.parse(localStorage.getItem("product"))
+        let fData = localData.filter((p) => p.id !== params.id)
+        localStorage.setItem("product", JSON.stringify(fData));
         loadData()
     }
 
@@ -83,7 +83,7 @@ function Product(props) {
             headerName: 'Action',
             width: 200,
             renderCell: (params) => (
-                <IconButton aria-label="delete" onClick={()=> handleDelete (params)}>
+                <IconButton aria-label="delete" onClick={() => handleDelete(params)}>
                     <DeleteIcon />
                 </IconButton>
             )
@@ -152,6 +152,7 @@ function Product(props) {
                                 <Button onClick={handleClose}>Close</Button>
                                 <Button type='submit'>Add </Button>
                             </DialogActions>
+
                         </DialogContent>
                     </Form>
                 </Formik>
@@ -165,6 +166,9 @@ function Product(props) {
                     rowsPerPageOptions={[5]}
                     checkboxSelection
                 />
+                <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => setData([])}>
+                    Delete
+                </Button>
             </div>
         </div>
     );
