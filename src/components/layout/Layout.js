@@ -16,8 +16,6 @@ import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-import MailIcon from '@mui/icons-material/Mail';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 
 import { NavLink } from 'react-router-dom';
@@ -91,7 +89,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 
 let dataObj = [
     { label: "product", to: '/product', icon: <ShoppingCartIcon /> },
-    { label: "product", to: '/product', icon: <ShoppingCartIcon /> },
+    // { label: "product", to: '/product', icon: <ShoppingCartIcon /> },
 ]
 
 export default function Layout({ children }) {
@@ -124,7 +122,7 @@ export default function Layout({ children }) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap component="div">
-                        Mini variant drawer
+                        Fruitkha Admin Panel
                     </Typography>
                 </Toolbar>
             </AppBar>

@@ -10,7 +10,6 @@ function App() {
     <Layout >
       <Switch>
       <Route path={'/product'} exact component={Product}></Route>
-      <Route path={'/product'} exact component={Product}></Route>
       </Switch>
     </Layout>
     </>
