@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -8,9 +8,13 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import * as yup from 'yup';
 import { Form, Formik, useFormik } from 'formik';
+import { DataGrid } from '@mui/x-data-grid';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function Product(props) {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [data, setData] = useState([])
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -19,11 +23,27 @@ function Product(props) {
     const handleClose = () => {
         setOpen(false);
         formik.resetForm()
-        
+
     };
     const handleInsert = (values) => {
-        localStorage
+        let localData = JSON.parse(localStorage.getItem("product"))
+        let id = Math.floor(Math.random() * 1000)
+        let data = {
+            id: id,
+            ...values
+        }
+        if (localData === null) {
+            localStorage.setItem("product", JSON.stringify([data]))
+        } else {
+            localData.push(data)
+            localStorage.setItem("product", JSON.stringify(localData))
+        }
+        // console.log(data);
+        handleClose()
+        loadData()
+
     }
+
     let schema = yup.object().shape({
         name: yup.string().required("please enter Product Name"),
         quantity: yup.string().required("Please Enter Product Quantity"),
@@ -44,6 +64,43 @@ function Product(props) {
     });
 
     const { handleSubmit, handleBlur, handleChange, errors, touched } = formik
+
+    const handleDelete =(params ) => {
+        console.log(params.id);
+
+        let localData =JSON.parse (localStorage.getItem("product"))
+        let fData = localData.filter((p)=> p.id !== params.id)
+        localStorage.setItem("product" , JSON.stringify(fData));
+        loadData()
+    }
+
+    const columns = [
+        { field: 'name', headerName: 'Product Name', width: 200 },
+        { field: 'quantity', headerName: 'Quantity', width: 200 },
+        { field: 'price', headerName: 'Price', width: 200, },
+        {
+            field: 'action',
+            headerName: 'Action',
+            width: 200,
+            renderCell: (params) => (
+                <IconButton aria-label="delete" onClick={()=> handleDelete (params)}>
+                    <DeleteIcon />
+                </IconButton>
+            )
+        },
+    ];
+
+    const loadData = () => {
+        let localData = JSON.parse(localStorage.getItem("product"))
+        if (localData !== null) {
+            setData(localData);
+        }
+        // console.log(localData);
+    }
+    useEffect(() => {
+        loadData()
+    }, [])
+
     return (
         <div>
             <h2>Fruitkha Products</h2>
@@ -99,6 +156,16 @@ function Product(props) {
                     </Form>
                 </Formik>
             </Dialog>
+            <h4>Product Data</h4>
+            <div style={{ height: 400, width: '100%' }}>
+                <DataGrid
+                    rows={data}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5]}
+                    checkboxSelection
+                />
+            </div>
         </div>
     );
 }
