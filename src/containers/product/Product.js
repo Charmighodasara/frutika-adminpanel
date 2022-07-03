@@ -4,25 +4,34 @@ import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import * as yup from 'yup';
 import { Form, Formik, useFormik } from 'formik';
 import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 function Product(props) {
     const [open, setOpen] = useState(false);
+    const [dopen, setDopen] = useState(false);
+    const [did, setDid] = useState(0)
     const [data, setData] = useState([])
+    const [editData, setEditData] = useState(false)
 
     const handleClickOpen = () => {
         setOpen(true);
     };
 
+    const handleClickDOpen = () => {
+        setDopen(true);
+    };
+
     const handleClose = () => {
         setOpen(false);
-        formik.resetForm()
+        setDopen(false);
+        formik.resetForm();
+        setEditData(false);
 
     };
     const handleInsert = (values) => {
@@ -38,12 +47,23 @@ function Product(props) {
             localData.push(data)
             localStorage.setItem("product", JSON.stringify(localData))
         }
-        // console.log(data);
         handleClose()
         loadData()
 
     }
-
+    const handleUpdateData = (values) => {
+        let localData = JSON.parse(localStorage.getItem("product"))
+        let uData = localData.map((e) => {
+            if (e.id === values.id) {
+                return values;
+            } else {
+                return e;
+            }
+        })
+        localStorage.setItem("product", JSON.stringify(uData))
+        handleClose()
+        loadData()
+    }
     let schema = yup.object().shape({
         name: yup.string().required("please enter Product Name"),
         quantity: yup.string().required("Please Enter Product Quantity"),
@@ -59,19 +79,29 @@ function Product(props) {
         validationSchema: schema,
         onSubmit: values => {
             // alert(JSON.stringify(values, null, 2));
-            handleInsert(values);
+            if (editData) {
+                handleUpdateData(values)
+            } else {
+                handleInsert(values);
+            }
         },
     });
 
-    const { handleSubmit, handleBlur, handleChange, errors, touched } = formik
+    const { handleSubmit, handleBlur, handleChange, errors, touched, values } = formik
 
-    const handleDelete = (params) => {
-        console.log(params.id);
-
+    const handleDelete = () => {
+        // console.log(params.id);
         let localData = JSON.parse(localStorage.getItem("product"))
-        let fData = localData.filter((p) => p.id !== params.id)
+        let fData = localData.filter((p) => p.id !== did)
         localStorage.setItem("product", JSON.stringify(fData));
         loadData()
+        handleClose()
+    }
+    const handleEdit = (params) => {
+        handleClickOpen()
+        formik.setValues(params.row)
+        console.log(params.row);
+        setEditData(true)
     }
 
     const columns = [
@@ -83,9 +113,14 @@ function Product(props) {
             headerName: 'Action',
             width: 200,
             renderCell: (params) => (
-                <IconButton aria-label="delete" onClick={() => handleDelete(params)}>
-                    <DeleteIcon />
-                </IconButton>
+                <>
+                    <IconButton aria-label="edit" onClick={() => handleEdit(params)} >
+                        <EditIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={() => { handleClickDOpen(); setDid(params.id) }}>
+                        <DeleteIcon />
+                    </IconButton>
+                </>
             )
         },
     ];
@@ -107,12 +142,32 @@ function Product(props) {
             <Button variant="outlined" onClick={handleClickOpen}>
                 Add Product
             </Button>
+            <Dialog
+                open={dopen}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Are you sure to delete this data ?"}
+                </DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleClose}>No</Button>
+                    <Button onClick={handleDelete} autoFocus>
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
             <Dialog open={open} onClose={handleClose} fullWidth>
-                <DialogTitle> Add Product</DialogTitle>
+                {
+                    editData ? <DialogTitle> update Product Details</DialogTitle>
+                        : <DialogTitle> Add Product</DialogTitle>
+                }
                 <Formik values={formik} >
                     <Form onSubmit={handleSubmit}>
                         <DialogContent>
                             <TextField
+                                value={values.name}
                                 margin="dense"
                                 id="name"
                                 name='name'
@@ -125,6 +180,7 @@ function Product(props) {
                             />
                             {errors.name && touched.name ? <p>{errors.name}</p> : ''}
                             <TextField
+                                value={values.quantity}
                                 margin="dense"
                                 id="quantity"
                                 name='quantity'
@@ -137,6 +193,7 @@ function Product(props) {
                             />
                             {errors.quantity && touched.quantity ? <p>{errors.quantity}</p> : ''}
                             <TextField
+                                value={values.price}
                                 margin="dense"
                                 id="price"
                                 name='price'
@@ -150,7 +207,11 @@ function Product(props) {
                             {errors.price && touched.price ? <p>{errors.price}</p> : ''}
                             <DialogActions>
                                 <Button onClick={handleClose}>Close</Button>
-                                <Button type='submit'>Add </Button>
+                                {
+                                    editData ? <Button type='submit'>update </Button>
+                                        : <Button type='submit'>Add </Button>
+                                }
+
                             </DialogActions>
 
                         </DialogContent>
