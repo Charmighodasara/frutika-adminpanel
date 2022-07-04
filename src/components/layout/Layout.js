@@ -88,8 +88,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 let dataObj = [
-    { label: "product", to: '/product', icon: <ShoppingCartIcon /> },
-    // { label: "product", to: '/product', icon: <ShoppingCartIcon /> },
+    { label: "product", to: '/product', icon: <ShoppingCartIcon /> }
 ]
 
 export default function Layout({ children }) {
