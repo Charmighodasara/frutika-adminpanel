@@ -211,7 +211,6 @@ function Product(props) {
                                     editData ? <Button type='submit'>update </Button>
                                         : <Button type='submit'>Add </Button>
                                 }
-
                             </DialogActions>
 
                         </DialogContent>
