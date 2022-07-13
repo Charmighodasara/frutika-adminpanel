@@ -18,6 +18,7 @@ function Product(props) {
     const [did, setDid] = useState(0)
     const [data, setData] = useState([])
     const [editData, setEditData] = useState(false)
+    const[search , setSearch] = useState([])
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -136,12 +137,35 @@ function Product(props) {
         loadData()
     }, [])
 
+    const hancleSearch = (val) => {
+        let localData = JSON.parse(localStorage.getItem("product"))
+
+        let fData = localData.filter((p)=>(
+            p.name.toLowerCase().includes(val.toLowerCase()) ||
+            p.quantity.toString().includes(val)||
+            p.price.toString().includes(val)
+        ))
+        // console.log(fData);
+        setSearch(fData)
+    }
+
+    const finalData =  search.length > 0 ? search :  data 
+
     return (
         <div>
             <h2>Fruitkha Products</h2>
             <Button variant="outlined" onClick={handleClickOpen}>
                 Add Product
             </Button>
+            <TextField
+                margin="dense"
+                name="search"
+                label="Search Medicine "
+                type="text"
+                fullWidth
+                variant="standard"
+                onChange={(e) => hancleSearch(e.target.value)}
+            />
             <Dialog
                 open={dopen}
                 onClose={handleClose}
@@ -170,7 +194,7 @@ function Product(props) {
                                 value={values.name}
                                 margin="dense"
                                 id="name"
-                                name='name'
+                                name='type'
                                 label="Product Name"
                                 type="name"
                                 fullWidth
@@ -220,7 +244,7 @@ function Product(props) {
             <h4>Product Data</h4>
             <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
-                    rows={data}
+                    rows={finalData}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
