@@ -11,6 +11,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
+import { useSelector } from 'react-redux';
 
 function Product(props) {
     const [open, setOpen] = useState(false);
@@ -19,6 +20,8 @@ function Product(props) {
     const [data, setData] = useState([])
     const [editData, setEditData] = useState(false)
     const[search , setSearch] = useState([])
+
+    const count = useSelector(state => state.counter)
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -153,7 +156,7 @@ function Product(props) {
 
     return (
         <div>
-            <h2>Fruitkha Products</h2>
+            <h2>Fruitkha Products {count.counter}</h2>
             <Button variant="outlined" onClick={handleClickOpen}>
                 Add Product
             </Button>

@@ -17,6 +17,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
+import HourglassEmptyIcon from '@mui/icons-material/HourglassEmpty';
 
 import { NavLink } from 'react-router-dom';
 
@@ -88,7 +89,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 let dataObj = [
-    { label: "product", to: '/product', icon: <ShoppingCartIcon /> }
+    { label: "Product", to: '/product', icon: <ShoppingCartIcon /> },
+    { label: "Counter", to: '/counter', icon: <HourglassEmptyIcon /> }
 ]
 
 export default function Layout({ children }) {
