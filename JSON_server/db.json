@@ -1,0 +1,44 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Green Apple",
+      "quantity": 10,
+      "price":100
+    },
+    {
+      "id":2,
+      "name": "strawberry",
+      "quantity": 20,
+      "price":120
+    },
+    {
+      "id": 3,
+      "name": "Lemon",
+      "quantity": 15,
+      "price":80
+    },
+    {
+      "id": 4,
+      "name": "Kiwi",
+      "quantity":5,
+      "price":150
+    },
+    {
+      "id": 5,
+      "name": "Grapes",
+      "quantity":" 1kg",
+      "price":95
+    }
+  ],
+  "comments": [
+    {
+      "id": 1,
+      "body": "some comment",
+      "postId": 1
+    }
+  ],
+  "profile": {
+    "name": "typicode"
+  }
+}

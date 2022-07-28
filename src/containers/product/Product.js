@@ -11,7 +11,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { GetProduct } from '../../Redux/Action/Product.getaction';
 
 function Product(props) {
     const [open, setOpen] = useState(false);
@@ -136,8 +137,12 @@ function Product(props) {
         }
         // console.log(localData);
     }
+
+    const dispatch = useDispatch()
+    const product = useSelector(state =>state.product)
     useEffect(() => {
-        loadData()
+        // loadData()
+        dispatch(GetProduct())
     }, [])
 
     const hancleSearch = (val) => {
@@ -247,7 +252,7 @@ function Product(props) {
             <h4>Product Data</h4>
             <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
-                    rows={finalData}
+                    rows={product.product}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5]}
