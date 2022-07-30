@@ -20,7 +20,7 @@ function Product(props) {
     const [did, setDid] = useState(0)
     const [data, setData] = useState([])
     const [editData, setEditData] = useState(false)
-    const[search , setSearch] = useState([])
+    const [search, setSearch] = useState([])
 
     const count = useSelector(state => state.counter)
 
@@ -139,7 +139,7 @@ function Product(props) {
     }
 
     const dispatch = useDispatch()
-    const product = useSelector(state =>state.product)
+    const product = useSelector(state => state.product)
     useEffect(() => {
         // loadData()
         dispatch(GetProduct())
@@ -148,120 +148,130 @@ function Product(props) {
     const hancleSearch = (val) => {
         let localData = JSON.parse(localStorage.getItem("product"))
 
-        let fData = localData.filter((p)=>(
+        let fData = localData.filter((p) => (
             p.name.toLowerCase().includes(val.toLowerCase()) ||
-            p.quantity.toString().includes(val)||
+            p.quantity.toString().includes(val) ||
             p.price.toString().includes(val)
         ))
         // console.log(fData);
         setSearch(fData)
     }
 
-    const finalData =  search.length > 0 ? search :  data 
+    const finalData = search.length > 0 ? search : data
 
     return (
         <div>
-            <h2>Fruitkha Products {count.counter}</h2>
-            <Button variant="outlined" onClick={handleClickOpen}>
-                Add Product
-            </Button>
-            <TextField
-                margin="dense"
-                name="search"
-                label="Search Medicine "
-                type="text"
-                fullWidth
-                variant="standard"
-                onChange={(e) => hancleSearch(e.target.value)}
-            />
-            <Dialog
-                open={dopen}
-                onClose={handleClose}
-                aria-labelledby="alert-dialog-title"
-                aria-describedby="alert-dialog-description"
-            >
-                <DialogTitle id="alert-dialog-title">
-                    {"Are you sure to delete this data ?"}
-                </DialogTitle>
-                <DialogActions>
-                    <Button onClick={handleClose}>No</Button>
-                    <Button onClick={handleDelete} autoFocus>
-                        Yes
-                    </Button>
-                </DialogActions>
-            </Dialog>
-            <Dialog open={open} onClose={handleClose} fullWidth>
-                {
-                    editData ? <DialogTitle> update Product Details</DialogTitle>
-                        : <DialogTitle> Add Product</DialogTitle>
-                }
-                <Formik values={formik} >
-                    <Form onSubmit={handleSubmit}>
-                        <DialogContent>
+            {
+                product.isLoading ?
+                    <p>Loading...</p>
+                    :
+                    product.error !== '' ?
+                        <p>{product.error}</p>
+                        :
+                        <div>
+                            <h2>Fruitkha Products {count.counter}</h2>
+                            <Button variant="outlined" onClick={handleClickOpen}>
+                                Add Product
+                            </Button>
                             <TextField
-                                value={values.name}
                                 margin="dense"
-                                id="name"
-                                name='type'
-                                label="Product Name"
-                                type="name"
-                                fullWidth
-                                variant="standard"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                            />
-                            {errors.name && touched.name ? <p>{errors.name}</p> : ''}
-                            <TextField
-                                value={values.quantity}
-                                margin="dense"
-                                id="quantity"
-                                name='quantity'
-                                label="Quantity"
+                                name="search"
+                                label="Search Medicine "
                                 type="text"
                                 fullWidth
                                 variant="standard"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
+                                onChange={(e) => hancleSearch(e.target.value)}
                             />
-                            {errors.quantity && touched.quantity ? <p>{errors.quantity}</p> : ''}
-                            <TextField
-                                value={values.price}
-                                margin="dense"
-                                id="price"
-                                name='price'
-                                label="Product price"
-                                type="text"
-                                fullWidth
-                                variant="standard"
-                                onChange={handleChange}
-                                onBlur={handleBlur}
-                            />
-                            {errors.price && touched.price ? <p>{errors.price}</p> : ''}
-                            <DialogActions>
-                                <Button onClick={handleClose}>Close</Button>
+                            <Dialog
+                                open={dopen}
+                                onClose={handleClose}
+                                aria-labelledby="alert-dialog-title"
+                                aria-describedby="alert-dialog-description"
+                            >
+                                <DialogTitle id="alert-dialog-title">
+                                    {"Are you sure to delete this data ?"}
+                                </DialogTitle>
+                                <DialogActions>
+                                    <Button onClick={handleClose}>No</Button>
+                                    <Button onClick={handleDelete} autoFocus>
+                                        Yes
+                                    </Button>
+                                </DialogActions>
+                            </Dialog>
+                            <Dialog open={open} onClose={handleClose} fullWidth>
                                 {
-                                    editData ? <Button type='submit'>update </Button>
-                                        : <Button type='submit'>Add </Button>
+                                    editData ? <DialogTitle> update Product Details</DialogTitle>
+                                        : <DialogTitle> Add Product</DialogTitle>
                                 }
-                            </DialogActions>
+                                <Formik values={formik} >
+                                    <Form onSubmit={handleSubmit}>
+                                        <DialogContent>
+                                            <TextField
+                                                value={values.name}
+                                                margin="dense"
+                                                id="name"
+                                                name='type'
+                                                label="Product Name"
+                                                type="name"
+                                                fullWidth
+                                                variant="standard"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                            />
+                                            {errors.name && touched.name ? <p>{errors.name}</p> : ''}
+                                            <TextField
+                                                value={values.quantity}
+                                                margin="dense"
+                                                id="quantity"
+                                                name='quantity'
+                                                label="Quantity"
+                                                type="text"
+                                                fullWidth
+                                                variant="standard"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                            />
+                                            {errors.quantity && touched.quantity ? <p>{errors.quantity}</p> : ''}
+                                            <TextField
+                                                value={values.price}
+                                                margin="dense"
+                                                id="price"
+                                                name='price'
+                                                label="Product price"
+                                                type="text"
+                                                fullWidth
+                                                variant="standard"
+                                                onChange={handleChange}
+                                                onBlur={handleBlur}
+                                            />
+                                            {errors.price && touched.price ? <p>{errors.price}</p> : ''}
+                                            <DialogActions>
+                                                <Button onClick={handleClose}>Close</Button>
+                                                {
+                                                    editData ? <Button type='submit'>update </Button>
+                                                        : <Button type='submit'>Add </Button>
+                                                }
+                                            </DialogActions>
 
-                        </DialogContent>
-                    </Form>
-                </Formik>
-            </Dialog>
-            <h4>Product Data</h4>
-            <div style={{ height: 400, width: '100%' }}>
-                <DataGrid
-                    rows={product.product}
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5]}
-                    checkboxSelection
-                />
-                <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => setData([])}>
-                    Delete
-                </Button>
-            </div>
+                                        </DialogContent>
+                                    </Form>
+                                </Formik>
+                            </Dialog>
+                            <h4>Product Data</h4>
+                            <div style={{ height: 400, width: '100%' }}>
+                                <DataGrid
+                                    rows={product.product}
+                                    columns={columns}
+                                    pageSize={5}
+                                    rowsPerPageOptions={[5]}
+                                    checkboxSelection
+                                />
+                                <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => setData([])}>
+                                    Delete
+                                </Button>
+                            </div>
+                        </div>
+            }
         </div>
     );
 }
