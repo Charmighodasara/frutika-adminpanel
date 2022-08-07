@@ -4,31 +4,31 @@
       "id": 1,
       "name": "Green Apple",
       "quantity": 10,
-      "price":100
+      "price": 100
     },
     {
-      "id":2,
+      "id": 2,
       "name": "strawberry",
       "quantity": 20,
-      "price":120
+      "price": 120
     },
     {
       "id": 3,
       "name": "Lemon",
-      "quantity": 15,
-      "price":80
+      "quantity": "20",
+      "price": 80
     },
     {
       "id": 4,
       "name": "Kiwi",
-      "quantity":5,
-      "price":150
+      "quantity": 5,
+      "price": 150
     },
     {
       "id": 5,
       "name": "Grapes",
-      "quantity":" 1kg",
-      "price":95
+      "quantity": " 1kg",
+      "price": 95
     }
   ],
   "comments": [

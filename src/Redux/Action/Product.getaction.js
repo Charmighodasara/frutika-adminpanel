@@ -6,7 +6,7 @@ export const GetProduct = () => (dispatch) => {
         dispatch(LoadingProduct())
         setTimeout(function () {
 
-            fetch(Base_url +'products')
+            fetch(Base_url + 'products')
                 .then(response => {
                     if (response.ok) {
                         return response;
@@ -26,7 +26,100 @@ export const GetProduct = () => (dispatch) => {
         }, 2000)
 
     } catch (error) {
-        console.log(error.message);
+        dispatch(errorProduct(error.message));
+    }
+}
+
+export const addProduct = (data) => (dispatch) => {
+    try {
+        fetch(Base_url + 'products', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response;
+                } else {
+                    var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                    error.response = response;
+                    throw error;
+                }
+            },
+                error => {
+                    var errmess = new Error(error.message);
+                    throw errmess;
+                })
+            .then((response) => response.json())
+            .then((data) => {
+                dispatch({ type: ActionTypes.ADD_PRODUCT, payload: data });
+            })
+            .catch((error) => dispatch(errorProduct(error.message)))
+    } catch (error) {
+        dispatch(errorProduct(error.message))
+    }
+}
+
+export const deleteProduct = (id) => (dispatch) => {
+    console.log(id);
+    try {
+        fetch(Base_url + 'products/' + id, {
+            method: 'DELETE'
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response;
+                } else {
+                    var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                    error.response = response;
+                    throw error;
+                }
+            },
+                error => {
+                    var errmess = new Error(error.message);
+                    throw errmess;
+                })
+            .then((response) => response.json())
+            .then(dispatch({ type: ActionTypes.DELETE_PRODUCT, payload: id }))
+            .catch((error) => dispatch(errorProduct(error.message)))
+
+    } catch (error) {
+        dispatch(errorProduct(error.message))
+    }
+}
+
+export const updateProduct = (data) => (dispatch) => {
+    console.log(data);
+    try {
+        fetch(Base_url + 'products/' + data.id, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        })
+            .then(response => {
+                if (response.ok) {
+                    return response;
+                } else {
+                    var error = new Error('Error ' + response.status + ': ' + response.statusText);
+                    error.response = response;
+                    throw error;
+                }
+            },
+                error => {
+                    var errmess = new Error(error.message);
+                    throw errmess;
+                })
+            .then((response) => response.json())
+            .then((data) => {
+                dispatch({ type: ActionTypes.UPDATE_PRODUCT, payload: data });
+            })
+            .catch((error) => dispatch(errorProduct(error.message)))
+    } catch (error) {
+        dispatch(errorProduct(error.message))
     }
 }
 

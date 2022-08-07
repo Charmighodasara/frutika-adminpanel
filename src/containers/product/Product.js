@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import { useDispatch, useSelector } from 'react-redux';
-import { GetProduct } from '../../Redux/Action/Product.getaction';
+import { addProduct, deleteProduct, GetProduct, updateProduct } from '../../Redux/Action/Product.getaction';
 
 function Product(props) {
     const [open, setOpen] = useState(false);
@@ -40,32 +40,35 @@ function Product(props) {
 
     };
     const handleInsert = (values) => {
-        let localData = JSON.parse(localStorage.getItem("product"))
+        // let localData = JSON.parse(localStorage.getItem("product"))
         let id = Math.floor(Math.random() * 1000)
         let data = {
             id: id,
             ...values
         }
-        if (localData === null) {
-            localStorage.setItem("product", JSON.stringify([data]))
-        } else {
-            localData.push(data)
-            localStorage.setItem("product", JSON.stringify(localData))
-        }
+
+        dispatch(addProduct(data))
+        // if (localData === null) {
+        //     localStorage.setItem("product", JSON.stringify([data]))
+        // } else {
+        //     localData.push(data)
+        //     localStorage.setItem("product", JSON.stringify(localData))
+        // }
         handleClose()
         loadData()
 
     }
     const handleUpdateData = (values) => {
-        let localData = JSON.parse(localStorage.getItem("product"))
-        let uData = localData.map((e) => {
-            if (e.id === values.id) {
-                return values;
-            } else {
-                return e;
-            }
-        })
-        localStorage.setItem("product", JSON.stringify(uData))
+        // let localData = JSON.parse(localStorage.getItem("product"))
+        // let uData = localData.map((e) => {
+        //     if (e.id === values.id) {
+        //         return values;
+        //     } else {
+        //         return e;
+        //     }
+        // })
+        // localStorage.setItem("product", JSON.stringify(uData))
+        dispatch(updateProduct(values))
         handleClose()
         loadData()
     }
@@ -96,9 +99,11 @@ function Product(props) {
 
     const handleDelete = () => {
         // console.log(params.id);
-        let localData = JSON.parse(localStorage.getItem("product"))
-        let fData = localData.filter((p) => p.id !== did)
-        localStorage.setItem("product", JSON.stringify(fData));
+        // let localData = JSON.parse(localStorage.getItem("product"))
+        // let fData = localData.filter((p) => p.id !== did)
+        // localStorage.setItem("product", JSON.stringify(fData));
+
+        dispatch(deleteProduct(did))
         loadData()
         handleClose()
     }
@@ -210,7 +215,7 @@ function Product(props) {
                                                 value={values.name}
                                                 margin="dense"
                                                 id="name"
-                                                name='type'
+                                                name='name'
                                                 label="Product Name"
                                                 type="name"
                                                 fullWidth
