@@ -1,4 +1,6 @@
+import { addDoc, collection } from 'firebase/firestore';
 import { Base_url } from '../../Base_URI/Base_url'
+import { db } from '../../firebase';
 import * as ActionTypes from '../ActionTypes'
 
 export const GetProduct = () => (dispatch) => {
@@ -30,8 +32,11 @@ export const GetProduct = () => (dispatch) => {
     }
 }
 
-export const addProduct = (data) => (dispatch) => {
+export const addProduct = (data) => async(dispatch) => {
     try {
+        const docRef = await addDoc(collection(db, "Product"), data);
+          console.log("Document written with ID: ", docRef.id);
+        dispatch({type: ActionTypes.ADD_PRODUCT, payload:{id:docRef.id, ...data}})
         // fetch(Base_url + 'products', {
         //     method: 'POST',
         //     headers: {
