@@ -41,13 +41,13 @@ function Product(props) {
     };
     const handleInsert = (values) => {
         // let localData = JSON.parse(localStorage.getItem("product"))
-        let id = Math.floor(Math.random() * 1000)
-        let data = {
-            id: id,
-            ...values
-        }
+        // let id = Math.floor(Math.random() * 1000)
+        // let data = {
+        //     id: id,
+        //     ...values
+        // }
 
-        dispatch(addProduct(data))
+        dispatch(addProduct(values))
         // if (localData === null) {
         //     localStorage.setItem("product", JSON.stringify([data]))
         // } else {

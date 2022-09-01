@@ -3,27 +3,27 @@ import * as ActionTypes from '../ActionTypes'
 
 export const GetProduct = () => (dispatch) => {
     try {
-        dispatch(LoadingProduct())
-        setTimeout(function () {
+        // dispatch(LoadingProduct())
+        // setTimeout(function () {
 
-            fetch(Base_url + 'products')
-                .then(response => {
-                    if (response.ok) {
-                        return response;
-                    } else {
-                        var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                        error.response = response;
-                        throw error;
-                    }
-                },
-                    error => {
-                        var errmess = new Error(error.message);
-                        throw errmess;
-                    })
-                .then((response) => response.json())
-                .then((data) => dispatch({ type: ActionTypes.PRODUCT_GETDATA, payload: data }))
-                .catch((error) => dispatch(errorProduct(error.message)))
-        }, 2000)
+        //     fetch(Base_url + 'products')
+        //         .then(response => {
+        //             if (response.ok) {
+        //                 return response;
+        //             } else {
+        //                 var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        //                 error.response = response;
+        //                 throw error;
+        //             }
+        //         },
+        //             error => {
+        //                 var errmess = new Error(error.message);
+        //                 throw errmess;
+        //             })
+        //         .then((response) => response.json())
+        //         .then((data) => dispatch({ type: ActionTypes.PRODUCT_GETDATA, payload: data }))
+        //         .catch((error) => dispatch(errorProduct(error.message)))
+        // }, 2000)
 
     } catch (error) {
         dispatch(errorProduct(error.message));
@@ -32,31 +32,31 @@ export const GetProduct = () => (dispatch) => {
 
 export const addProduct = (data) => (dispatch) => {
     try {
-        fetch(Base_url + 'products', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response;
-                } else {
-                    var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                    error.response = response;
-                    throw error;
-                }
-            },
-                error => {
-                    var errmess = new Error(error.message);
-                    throw errmess;
-                })
-            .then((response) => response.json())
-            .then((data) => {
-                dispatch({ type: ActionTypes.ADD_PRODUCT, payload: data });
-            })
-            .catch((error) => dispatch(errorProduct(error.message)))
+        // fetch(Base_url + 'products', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(data),
+        // })
+        //     .then(response => {
+        //         if (response.ok) {
+        //             return response;
+        //         } else {
+        //             var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        //             error.response = response;
+        //             throw error;
+        //         }
+        //     },
+        //         error => {
+        //             var errmess = new Error(error.message);
+        //             throw errmess;
+        //         })
+        //     .then((response) => response.json())
+        //     .then((data) => {
+        //         dispatch({ type: ActionTypes.ADD_PRODUCT, payload: data });
+        //     })
+        //     .catch((error) => dispatch(errorProduct(error.message)))
     } catch (error) {
         dispatch(errorProduct(error.message))
     }
