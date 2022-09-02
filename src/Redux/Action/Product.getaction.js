@@ -1,10 +1,17 @@
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, getDocs } from 'firebase/firestore';
 import { Base_url } from '../../Base_URI/Base_url'
 import { db } from '../../firebase';
 import * as ActionTypes from '../ActionTypes'
 
-export const GetProduct = () => (dispatch) => {
+export const GetProduct = () => async(dispatch) => {
     try {
+        const querySnapshot = await getDocs(collection(db, "Product"));
+        let data = []
+        querySnapshot.forEach((doc) => {
+            data.push({id:doc.id , ...doc.data()})
+        });
+        console.log(data);
+        dispatch({type : ActionTypes.PRODUCT_GETDATA , payload : data})
         // dispatch(LoadingProduct())
         // setTimeout(function () {
 
@@ -32,11 +39,11 @@ export const GetProduct = () => (dispatch) => {
     }
 }
 
-export const addProduct = (data) => async(dispatch) => {
+export const addProduct = (data) => async (dispatch) => {
     try {
         const docRef = await addDoc(collection(db, "Product"), data);
-          console.log("Document written with ID: ", docRef.id);
-        dispatch({type: ActionTypes.ADD_PRODUCT, payload:{id:docRef.id, ...data}})
+        console.log("Document written with ID: ", docRef.id);
+        dispatch({ type: ActionTypes.ADD_PRODUCT, payload: { id: docRef.id, ...data } })
         // fetch(Base_url + 'products', {
         //     method: 'POST',
         //     headers: {
