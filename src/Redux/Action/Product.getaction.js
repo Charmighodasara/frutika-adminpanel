@@ -1,17 +1,17 @@
-import { addDoc, collection, getDocs } from 'firebase/firestore';
+import { addDoc, collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
 import { Base_url } from '../../Base_URI/Base_url'
 import { db } from '../../firebase';
 import * as ActionTypes from '../ActionTypes'
 
-export const GetProduct = () => async(dispatch) => {
+export const GetProduct = () => async (dispatch) => {
     try {
         const querySnapshot = await getDocs(collection(db, "Product"));
         let data = []
         querySnapshot.forEach((doc) => {
-            data.push({id:doc.id , ...doc.data()})
+            data.push({ id: doc.id, ...doc.data() })
         });
         console.log(data);
-        dispatch({type : ActionTypes.PRODUCT_GETDATA , payload : data})
+        dispatch({ type: ActionTypes.PRODUCT_GETDATA, payload: data })
         // dispatch(LoadingProduct())
         // setTimeout(function () {
 
@@ -74,62 +74,75 @@ export const addProduct = (data) => async (dispatch) => {
     }
 }
 
-export const deleteProduct = (id) => (dispatch) => {
+export const deleteProduct = (id) => async (dispatch) => {
     console.log(id);
     try {
-        fetch(Base_url + 'products/' + id, {
-            method: 'DELETE'
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response;
-                } else {
-                    var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                    error.response = response;
-                    throw error;
-                }
-            },
-                error => {
-                    var errmess = new Error(error.message);
-                    throw errmess;
-                })
-            .then((response) => response.json())
-            .then(dispatch({ type: ActionTypes.DELETE_PRODUCT, payload: id }))
-            .catch((error) => dispatch(errorProduct(error.message)))
+        await deleteDoc(doc(db, "Product", id));
+        dispatch({ type: ActionTypes.DELETE_PRODUCT, payload: id })
+        // fetch(Base_url + 'products/' + id, {
+        //     method: 'DELETE'
+        // })
+        //     .then(response => {
+        //         if (response.ok) {
+        //             return response;
+        //         } else {
+        //             var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        //             error.response = response;
+        //             throw error;
+        //         }
+        //     },
+        //         error => {
+        //             var errmess = new Error(error.message);
+        //             throw errmess;
+        //         })
+        //     .then((response) => response.json())
+        //     .then(dispatch({ type: ActionTypes.DELETE_PRODUCT, payload: id }))
+        //     .catch((error) => dispatch(errorProduct(error.message)))
 
     } catch (error) {
         dispatch(errorProduct(error.message))
     }
 }
 
-export const updateProduct = (data) => (dispatch) => {
+export const updateProduct = (data) => async(dispatch) => {
     console.log(data);
     try {
-        fetch(Base_url + 'products/' + data.id, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-        })
-            .then(response => {
-                if (response.ok) {
-                    return response;
-                } else {
-                    var error = new Error('Error ' + response.status + ': ' + response.statusText);
-                    error.response = response;
-                    throw error;
-                }
-            },
-                error => {
-                    var errmess = new Error(error.message);
-                    throw errmess;
-                })
-            .then((response) => response.json())
-            .then((data) => {
-                dispatch({ type: ActionTypes.UPDATE_PRODUCT, payload: data });
-            })
-            .catch((error) => dispatch(errorProduct(error.message)))
+        const ProductRef = doc(db, "Product", data.id);
+
+        // Set the "capital" field of the city 'DC'
+        await updateDoc(ProductRef, {
+            name: data.name,
+            quantity: data.quantity,
+            price: data.price
+        });
+        dispatch({type : ActionTypes.UPDATE_PRODUCT, payload : data})
+
+        // fetch(Base_url + 'products/' + data.id, {
+        //     method: 'PUT',
+        //     headers: {
+        //         'Content-Type': 'application/json',
+        //     },
+        //     body: JSON.stringify(data),
+        // })
+        //     .then(response => {
+        //         if (response.ok) {
+        //             return response;
+        //         } else {
+        //             var error = new Error('Error ' + response.status + ': ' + response.statusText);
+        //             error.response = response;
+        //             throw error;
+        //         }
+        //     },
+        //         error => {
+        //             var errmess = new Error(error.message);
+        //             throw errmess;
+        //         })
+        //     .then((response) => response.json())
+        //     .then((data) => {
+        //         dispatch({ type: ActionTypes.UPDATE_PRODUCT, payload: data });
+        //     })
+        //     .catch((error) => dispatch(errorProduct(error.message)))
+
     } catch (error) {
         dispatch(errorProduct(error.message))
     }
