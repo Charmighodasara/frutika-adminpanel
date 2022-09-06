@@ -1,6 +1,7 @@
 import { addDoc, collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
+import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { Base_url } from '../../Base_URI/Base_url'
-import { db } from '../../firebase';
+import { db, storage } from '../../firebase';
 import * as ActionTypes from '../ActionTypes'
 
 export const GetProduct = () => async (dispatch) => {
@@ -40,10 +41,35 @@ export const GetProduct = () => async (dispatch) => {
 }
 
 export const addProduct = (data) => async (dispatch) => {
+    console.log(data);
+
     try {
-        const docRef = await addDoc(collection(db, "Product"), data);
-        console.log("Document written with ID: ", docRef.id);
-        dispatch({ type: ActionTypes.ADD_PRODUCT, payload: { id: docRef.id, ...data } })
+        const ProductRef = ref(storage, 'Product/' + data.profile_img.name);
+
+        uploadBytes(ProductRef, data.profile_img)
+            .then((snapshot) => {
+                console.log('Uploaded a blob or file!');
+                getDownloadURL(ref(storage, snapshot.ref))
+                    .then(async (url) => {
+                        const docRef = await addDoc(collection(db, "Product"), {
+                            ...data,
+                            profile_img: url
+                        });
+                        dispatch({
+                            type: ActionTypes.ADD_PRODUCT, payload:
+                            {
+                                id: docRef.id,
+                                ...data,
+                                profile_img: url
+                            }
+                        })
+
+                    })
+            });
+
+        // const docRef = await addDoc(collection(db, "Product"), data);
+        // console.log("Document written with ID: ", docRef.id);
+        // dispatch({ type: ActionTypes.ADD_PRODUCT, payload: { id: docRef.id, ...data } })
         // fetch(Base_url + 'products', {
         //     method: 'POST',
         //     headers: {
@@ -104,7 +130,7 @@ export const deleteProduct = (id) => async (dispatch) => {
     }
 }
 
-export const updateProduct = (data) => async(dispatch) => {
+export const updateProduct = (data) => async (dispatch) => {
     console.log(data);
     try {
         const ProductRef = doc(db, "Product", data.id);
@@ -115,7 +141,7 @@ export const updateProduct = (data) => async(dispatch) => {
             quantity: data.quantity,
             price: data.price
         });
-        dispatch({type : ActionTypes.UPDATE_PRODUCT, payload : data})
+        dispatch({ type: ActionTypes.UPDATE_PRODUCT, payload: data })
 
         // fetch(Base_url + 'products/' + data.id, {
         //     method: 'PUT',
