@@ -284,7 +284,7 @@ function Product(props) {
                                 <DataGrid
                                     rows={product.product}
                                     columns={columns}
-                                    pageSize={5}
+                                    pageSize={6}
                                     rowsPerPageOptions={[5]}
                                     checkboxSelection
                                 />
