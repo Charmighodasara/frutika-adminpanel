@@ -285,7 +285,7 @@ function Product(props) {
                                     rows={product.product}
                                     columns={columns}
                                     pageSize={6}
-                                    rowsPerPageOptions={[5]}
+                                    rowsPerPageOptions={[6]}
                                     checkboxSelection
                                 />
                                 <Button variant="outlined" startIcon={<DeleteIcon />} onClick={() => setData([])}>
