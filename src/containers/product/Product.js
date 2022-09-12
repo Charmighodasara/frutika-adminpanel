@@ -118,13 +118,22 @@ function Product(props) {
     }
 
     const columns = [
-        { field: 'name', headerName: 'Product Name', width: 200 },
-        { field: 'quantity', headerName: 'Quantity', width: 200 },
-        { field: 'price', headerName: 'Price', width: 200, },
+        { field: 'name', headerName: 'Product Name', width: 150 },
+        { field: 'quantity', headerName: 'Quantity', width: 150 },
+        { field: 'price', headerName: 'Price', width:150 },
+        {
+            field: 'profile_img',
+            headerName: 'Profile Image',
+            width: 100,
+            flex:1,
+            renderCell: (params) => (
+                    <img src={params.row.profile_img} width={50} height={50} />
+            )
+        },
         {
             field: 'action',
             headerName: 'Action',
-            width: 200,
+            width: 500,
             renderCell: (params) => (
                 <>
                     <IconButton aria-label="edit" onClick={() => handleEdit(params)} >
