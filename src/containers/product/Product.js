@@ -139,7 +139,7 @@ function Product(props) {
                     <IconButton aria-label="edit" onClick={() => handleEdit(params)} >
                         <EditIcon />
                     </IconButton>
-                    <IconButton aria-label="delete" onClick={() => { handleClickDOpen(); setDid(params.id) }}>
+                    <IconButton aria-label="delete" onClick={() => { handleClickDOpen(); setDid(params) }}>
                         <DeleteIcon />
                     </IconButton>
                 </>

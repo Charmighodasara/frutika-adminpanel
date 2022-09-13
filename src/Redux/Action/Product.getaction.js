@@ -1,5 +1,5 @@
 import { addDoc, collection, getDocs, doc, deleteDoc, updateDoc } from 'firebase/firestore';
-import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
+import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { Base_url } from '../../Base_URI/Base_url'
 import { db, storage } from '../../firebase';
 import * as ActionTypes from '../ActionTypes'
@@ -44,8 +44,8 @@ export const addProduct = (data) => async (dispatch) => {
     console.log(data);
 
     try {
-        const ProductRef = ref(storage, 'Product/' + data.profile_img.name);
-
+        const rendomName = Math.floor(Math.random() * 10000000).toString()
+        const ProductRef = ref(storage, 'Product/' + rendomName);
         uploadBytes(ProductRef, data.profile_img)
             .then((snapshot) => {
                 console.log('Uploaded a blob or file!');
@@ -53,7 +53,8 @@ export const addProduct = (data) => async (dispatch) => {
                     .then(async (url) => {
                         const docRef = await addDoc(collection(db, "Product"), {
                             ...data,
-                            profile_img: url
+                            profile_img: url,
+                            fileName: rendomName
                         });
                         dispatch({
                             type: ActionTypes.ADD_PRODUCT, payload:
@@ -100,11 +101,25 @@ export const addProduct = (data) => async (dispatch) => {
     }
 }
 
-export const deleteProduct = (id) => async (dispatch) => {
-    console.log(id);
+export const deleteProduct = (data) => async (dispatch) => {
     try {
-        await deleteDoc(doc(db, "Product", id));
-        dispatch({ type: ActionTypes.DELETE_PRODUCT, payload: id })
+        console.log(data);
+
+        const productRef = ref(storage, 'Product/' + data.row.fileName);
+        deleteObject(productRef)
+            .then(async () => {
+                // await deleteDoc(doc(db, "Product", data.id));
+                // dispatch({ type: ActionTypes.DELETE_PRODUCT, payload: data.id })
+            }).catch((error) => {
+                dispatch(errorProduct(error.message))
+            });
+
+
+        // await deleteDoc(doc(db, "Product", id));
+        // dispatch({ type: ActionTypes.DELETE_PRODUCT, payload: id })
+
+
+
         // fetch(Base_url + 'products/' + id, {
         //     method: 'DELETE'
         // })
