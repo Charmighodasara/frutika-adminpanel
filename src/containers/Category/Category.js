@@ -28,8 +28,6 @@ function Category(props) {
         profile_img: yup.mixed().required("please select profile image.")
     });
 
-   
-
     const formik = useFormik({
         initialValues: {
             name: '',
