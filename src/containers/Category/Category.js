@@ -1,4 +1,5 @@
-import * as React from 'react';
+
+import React, { useEffect, useState } from 'react';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
 import Dialog from '@mui/material/Dialog';
@@ -8,10 +9,14 @@ import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Form, Formik, useFormik } from 'formik';
 import * as yup from 'yup';
+import { DataGrid } from '@mui/x-data-grid';
+import { useDispatch, useSelector } from 'react-redux';
+import { addCategory, GetCategory } from '../../Redux/Action/Category.action';
 
 
 function Category(props) {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false)
+    const [data, setData] = useState([])
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -21,27 +26,52 @@ function Category(props) {
         setOpen(false);
         formik.resetForm()
     };
+
+    const dispatch = useDispatch()
+
+    const handleInsert = (values) => {
+        console.log(values);
+        dispatch(addCategory(values))
+        handleClose()
+    }
+
     let schema = yup.object().shape({
         name: yup.string().required("please enter Product Name"),
-        quantity: yup.string().required("Please Enter Product Quantity"),
-        price: yup.number().required("please enter Product price").positive().integer(),
         profile_img: yup.mixed().required("please select profile image.")
     });
 
     const formik = useFormik({
         initialValues: {
             name: '',
-            quantity: '',
-            price: '',
             profile_img: ''
         },
         validationSchema: schema,
         onSubmit: values => {
-            alert(JSON.stringify(values, null, 2));
-            // handleInsert(values);
+            // alert(JSON.stringify(values, null, 2));
+            handleInsert(values);
 
         },
     });
+
+    const columns = [
+        { field: 'name', headerName: 'Categoty Name', width: 150 },
+        {
+            field: 'profile_img',
+            headerName: 'Profile Image',
+            width: 100,
+            flex: 1,
+            renderCell: (params) => (
+                <img src={params.row.profile_img} width={50} height={50} />
+            )
+        },
+    ];
+
+    useEffect(() => {
+        // loadData()
+        dispatch(GetCategory())
+    }, [])
+
+    const categoty = useSelector(state => state.categoty)
     const { handleSubmit, handleBlur, handleChange, errors, touched, values, setFieldValue } = formik
     return (
         <div>
@@ -58,33 +88,43 @@ function Category(props) {
                     <Form onSubmit={handleSubmit}>
                         <DialogContent>
                             <TextField
-                                autoFocus
+                                value={values.name}
                                 margin="dense"
                                 id="name"
-                                name="name"
-                                label="category Name"
-                                type="text"
+                                name='name'
+                                label="Category Name"
+                                type="name"
                                 fullWidth
                                 variant="standard"
                                 onChange={handleChange}
                                 onBlur={handleBlur}
                             />
                             {errors.name && touched.name ? <p>{errors.name}</p> : ''}
-                            <TextField
+                            <input
                                 type="file"
                                 name="profile_img"
-                            // label="category Image"
-                            // onChange={(e) => setFieldValue('profile_img', e.target.files[0])}
+                                onChange={(e) => setFieldValue('profile_img', e.target.files[0])}
                             />
+                            <DialogActions>
+                                <Button onClick={handleClose}>Close</Button>
+                                <Button type='submit'>Add </Button>
+                            </DialogActions>
+
                         </DialogContent>
-                        <DialogActions>
-                            <Button onClick={handleClose}>Close</Button>
-                            <Button onClick={handleClose}>Add</Button>
-                        </DialogActions>
                     </Form>
                 </Formik>
 
             </Dialog>
+            <h4>category Data</h4>
+            <div style={{ height: 400, width: '100%' }}>
+                <DataGrid
+                    rows={categoty.categoty}
+                    columns={columns}
+                    pageSize={6}
+                    rowsPerPageOptions={[6]}
+                    checkboxSelection
+                />
+            </div>
         </div>
     );
 }

@@ -61,7 +61,8 @@ export const addProduct = (data) => async (dispatch) => {
                             {
                                 id: docRef.id,
                                 ...data,
-                                profile_img: url
+                                profile_img: url,
+                                fileName: rendomName
                             }
                         })
 
@@ -105,7 +106,7 @@ export const deleteProduct = (data) => async (dispatch) => {
     try {
         console.log(data);
 
-        const productRef = ref(storage, 'Product/' + data.row.fileName);
+        const productRef = ref(storage, 'Product/' + data.fileName);
         deleteObject(productRef)
             .then(async () => {
                 // await deleteDoc(doc(db, "Product", data.id));
