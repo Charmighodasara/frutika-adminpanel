@@ -71,7 +71,7 @@ function Category(props) {
         dispatch(GetCategory())
     }, [])
 
-    const categoty = useSelector(state => state.category)
+    const category = useSelector(state => state.category)    
     const { handleSubmit, handleBlur, handleChange, errors, touched, values, setFieldValue } = formik
     return (
         <div>
@@ -119,7 +119,7 @@ function Category(props) {
             <h4>category Data</h4>
             <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
-                    rows={data}
+                    rows={category.category}
                     columns={columns}
                     pageSize={6}
                     rowsPerPageOptions={[6]}

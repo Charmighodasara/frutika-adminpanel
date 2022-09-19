@@ -7,5 +7,5 @@ import { productReducer } from "./ProductGet.reducer";
 export const rootReducer = combineReducers({
     counter : counterReducer,
     product : productReducer,
-    categoty : categoryReducer
+    category : categoryReducer
 })
