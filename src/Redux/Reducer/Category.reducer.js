@@ -1,35 +1,33 @@
 import * as ActionTypes from '../ActionTypes'
 
-const initVal = {
-    isLoading: false,
-    categoty: [],
+const initval = {
+    category: [],
     error: ''
 }
 
-export const categoryReducer = (state = initVal, action) => {
+export const categoryReducer = (state = initval, action) => {
     switch (action.type) {
         case ActionTypes.GETDATA_CATEGORY:
             return {
                 ...state,
-                isLoading: false,
-                categoty: action.payload,
+                category: action.payload,
                 error: ''
             }
         case ActionTypes.ERROR_CATEGORY:
             return {
                 ...state,
-                isLoading: false,
-                categoty: [],
+                category: [],
                 error: action.payload
             }
         case ActionTypes.ADD_CATEGORY:
             return {
                 ...state,
-                isLoading: false,
-                categoty: state.categoty.concat(action.payload),
+                category: state.concat(action.payload),
                 error: ''
             }
+
         default:
             return state;
     }
+
 }

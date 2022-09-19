@@ -71,7 +71,7 @@ function Category(props) {
         dispatch(GetCategory())
     }, [])
 
-    const categoty = useSelector(state => state.categoty)
+    const categoty = useSelector(state => state.category)
     const { handleSubmit, handleBlur, handleChange, errors, touched, values, setFieldValue } = formik
     return (
         <div>
@@ -105,6 +105,7 @@ function Category(props) {
                                 name="profile_img"
                                 onChange={(e) => setFieldValue('profile_img', e.target.files[0])}
                             />
+                            {errors.profile_img && touched.profile_img ? <p>{errors.profile_img}</p> : ''}
                             <DialogActions>
                                 <Button onClick={handleClose}>Close</Button>
                                 <Button type='submit'>Add </Button>
@@ -118,7 +119,7 @@ function Category(props) {
             <h4>category Data</h4>
             <div style={{ height: 400, width: '100%' }}>
                 <DataGrid
-                    rows={categoty.categoty}
+                    rows={data}
                     columns={columns}
                     pageSize={6}
                     rowsPerPageOptions={[6]}
