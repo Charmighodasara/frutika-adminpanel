@@ -22,7 +22,7 @@ export const categoryReducer = (state = initval, action) => {
         case ActionTypes.ADD_CATEGORY:
             return {
                 ...state,
-                category: state.concat(action.payload),
+                category: state.category.concat(action.payload),
                 error: ''
             }
 
