@@ -44,8 +44,8 @@ export const addProduct = (data) => async (dispatch) => {
     console.log(data);
 
     try {
-        const rendomName = Math.floor(Math.random() * 10000000).toString()
-        const ProductRef = ref(storage, 'Product/' + rendomName);
+        const rendomNumber = Math.floor(Math.random() * 10000000).toString()
+        const ProductRef = ref(storage, 'Product/' + rendomNumber);
         uploadBytes(ProductRef, data.profile_img)
             .then((snapshot) => {
                 console.log('Uploaded a blob or file!');
@@ -54,7 +54,7 @@ export const addProduct = (data) => async (dispatch) => {
                         const docRef = await addDoc(collection(db, "Product"), {
                             ...data,
                             profile_img: url,
-                            fileName: rendomName
+                            fileName: rendomNumber
                         });
                         dispatch({
                             type: ActionTypes.ADD_PRODUCT, payload:
@@ -62,7 +62,7 @@ export const addProduct = (data) => async (dispatch) => {
                                 id: docRef.id,
                                 ...data,
                                 profile_img: url,
-                                fileName: rendomName
+                                fileName: rendomNumber
                             }
                         })
 
@@ -109,8 +109,8 @@ export const deleteProduct = (data) => async (dispatch) => {
         const productRef = ref(storage, 'Product/' + data.fileName);
         deleteObject(productRef)
             .then(async () => {
-                // await deleteDoc(doc(db, "Product", data.id));
-                // dispatch({ type: ActionTypes.DELETE_PRODUCT, payload: data.id })
+                await deleteDoc(doc(db, "Product", data.id));
+                dispatch({ type: ActionTypes.DELETE_PRODUCT, payload: data.id })
             }).catch((error) => {
                 dispatch(errorProduct(error.message))
             });
@@ -151,13 +151,47 @@ export const updateProduct = (data) => async (dispatch) => {
     try {
         const ProductRef = doc(db, "Product", data.id);
 
-        // Set the "capital" field of the city 'DC'
-        await updateDoc(ProductRef, {
-            name: data.name,
-            quantity: data.quantity,
-            price: data.price
-        });
-        dispatch({ type: ActionTypes.UPDATE_PRODUCT, payload: data })
+        if (typeof data.profile_img === "string") {
+
+            await updateDoc(ProductRef, {
+                name: data.name,
+                quantity: data.quantity,
+                price: data.price
+            });
+            dispatch({ type: ActionTypes.UPDATE_PRODUCT, payload: data })
+        } else {
+            console.log("change image");
+            const delProductRef = ref(storage, 'Product/' + data.fileName);
+            const rendomNumber = Math.floor(Math.random() * 10000000).toString()
+            const insProductRef = ref(storage, 'Product/' + rendomNumber);
+
+            deleteObject(delProductRef)   //1
+                .then(async () => {
+                    uploadBytes(insProductRef, data.profile_img) //2
+                        .then((snapshot) => {
+                            getDownloadURL(ref(storage, snapshot.ref))  //3
+                                .then(async (url) => {
+                                    console.log(url);
+                                    await updateDoc(ProductRef, {  //4
+                                        name: data.name,
+                                        quantity: data.quantity,
+                                        price: data.price,
+                                        profile_img: url,
+                                        fileName: rendomNumber
+                                    });
+                                    //5
+                                    dispatch({
+                                        type: ActionTypes.UPDATE_PRODUCT, payload: {
+                                            ...data,
+                                            profile_img: url,
+                                            fileName: rendomNumber
+                                        }
+                                    })
+                                })
+                        })
+                })
+
+        }
 
         // fetch(Base_url + 'products/' + data.id, {
         //     method: 'PUT',

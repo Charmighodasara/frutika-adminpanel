@@ -11,12 +11,18 @@ import { Form, Formik, useFormik } from 'formik';
 import * as yup from 'yup';
 import { DataGrid } from '@mui/x-data-grid';
 import { useDispatch, useSelector } from 'react-redux';
-import { addCategory, GetCategory } from '../../Redux/Action/Category.action';
+import { addCategory, deleteCategory, GetCategory, updateCategory } from '../../Redux/Action/Category.action';
+import IconButton from '@mui/material/IconButton';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 
 
 function Category(props) {
-    const [open, setOpen] = useState(false)
-    const [data, setData] = useState([])
+    const [open, setOpen] = useState(false)             //popup open close
+    const [dopen, setDopen] = useState(false);          // delete popup box open close
+    const [editData, setEditData] = useState(false)     // edit data 
+    const [did, setDid] = useState(0)                   //delete data
+
 
     const handleClickOpen = () => {
         setOpen(true);
@@ -24,7 +30,12 @@ function Category(props) {
 
     const handleClose = () => {
         setOpen(false);
-        formik.resetForm()
+        setDopen(false);
+        formik.resetForm();
+        setEditData(false);
+    };
+    const handleClickDOpen = () => {
+        setDopen(true);
     };
 
     const dispatch = useDispatch()
@@ -32,6 +43,22 @@ function Category(props) {
     const handleInsert = (values) => {
         console.log(values);
         dispatch(addCategory(values))
+        handleClose()
+    }
+    const handleEdit = (params) => {
+        handleClickOpen()
+        formik.setValues(params.row)
+        console.log(params.row);
+        setEditData(true)
+    }
+
+    const handleUpdateData = (values) => {
+        dispatch(updateCategory(values))
+        handleClose()
+    }
+
+    const handleDelete = () => {
+        dispatch(deleteCategory(did))
         handleClose()
     }
 
@@ -48,8 +75,11 @@ function Category(props) {
         validationSchema: schema,
         onSubmit: values => {
             // alert(JSON.stringify(values, null, 2));
-            handleInsert(values);
-
+            if (editData) {
+                handleUpdateData(values)
+            } else {
+                handleInsert(values);
+            }
         },
     });
 
@@ -59,9 +89,23 @@ function Category(props) {
             field: 'profile_img',
             headerName: 'Profile Image',
             width: 100,
-            flex: 1,
             renderCell: (params) => (
                 <img src={params.row.profile_img} width={50} height={50} />
+            )
+        },
+        {
+            field: 'action',
+            headerName: 'Action',
+            width: 500,
+            renderCell: (params) => (
+                <>
+                    <IconButton aria-label="edit" onClick={() => handleEdit(params)} >
+                        <EditIcon />
+                    </IconButton>
+                    <IconButton aria-label="delete" onClick={() => { handleClickDOpen(); setDid(params.row) }}>
+                        <DeleteIcon />
+                    </IconButton>
+                </>
             )
         },
     ];
@@ -71,7 +115,7 @@ function Category(props) {
         dispatch(GetCategory())
     }, [])
 
-    const category = useSelector(state => state.category)    
+    const category = useSelector(state => state.category)
     const { handleSubmit, handleBlur, handleChange, errors, touched, values, setFieldValue } = formik
     return (
         <div>
@@ -79,11 +123,29 @@ function Category(props) {
             <Button variant="outlined" onClick={handleClickOpen}>
                 Add Categories
             </Button>
+            <Dialog    // delete popup
+                open={dopen}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    {"Are you sure to delete this data ?"}
+                </DialogTitle>
+                <DialogActions>
+                    <Button onClick={handleClose}>No</Button>
+                    <Button onClick={handleDelete} autoFocus>
+                        Yes
+                    </Button>
+                </DialogActions>
+            </Dialog>
 
             <Dialog open={open} onClose={handleClose} fullWidth>
 
-                <DialogTitle>
-                    Categories</DialogTitle>
+                {
+                    editData ? <DialogTitle> update Category Details</DialogTitle>
+                        : <DialogTitle> Add Category</DialogTitle>
+                }
                 <Formik values={formik} >
                     <Form onSubmit={handleSubmit}>
                         <DialogContent>
@@ -100,7 +162,7 @@ function Category(props) {
                                 onBlur={handleBlur}
                             />
                             {errors.name && touched.name ? <p>{errors.name}</p> : ''}
-                            <input
+                            <TextField
                                 type="file"
                                 name="profile_img"
                                 onChange={(e) => setFieldValue('profile_img', e.target.files[0])}
@@ -108,7 +170,10 @@ function Category(props) {
                             {errors.profile_img && touched.profile_img ? <p>{errors.profile_img}</p> : ''}
                             <DialogActions>
                                 <Button onClick={handleClose}>Close</Button>
-                                <Button type='submit'>Add </Button>
+                                {
+                                    editData ? <Button type='submit'>update </Button>
+                                        : <Button type='submit'>Add </Button>
+                                }
                             </DialogActions>
 
                         </DialogContent>
